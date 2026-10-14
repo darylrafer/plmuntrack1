@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PLMunTrack — QR Visitor & Attendance Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="visitors">
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+  <svg class="brand-mark" viewBox="0 0 30 30" fill="none">
+    <rect x="0" y="0" width="13" height="13" rx="2" fill="#2FE0C0"/>
+    <rect x="3" y="3" width="7" height="7" rx="1" fill="#0A1120"/>
+    <rect x="17" y="0" width="13" height="13" rx="2" fill="#17233D" stroke="#2FE0C0" stroke-width="1.4"/>
+    <rect x="0" y="17" width="13" height="13" rx="2" fill="#17233D" stroke="#2FE0C0" stroke-width="1.4"/>
+    <rect x="17" y="17" width="4" height="4" rx="1" fill="#2FE0C0"/>
+    <rect x="23" y="17" width="7" height="4" rx="1" fill="#233255"/>
+    <rect x="17" y="23" width="7" height="7" rx="1" fill="#233255"/>
+    <rect x="26" y="26" width="4" height="4" rx="1" fill="#2FE0C0"/>
+  </svg>
+  <div>
+    <div class="brand-name">PLMunTrack</div>
+    <div class="brand-sub">VISITOR &amp; ATTENDANCE</div>
+  </div>
+</div>
+      <nav class="nav">
+  <a class="nav-item" href="index.html" data-page="dashboard">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 12h5v9H3zM10 3h5v18h-5zM17 8h4v13h-4z"/></svg>
+    Dashboard
+  </a>
+  <a class="nav-item" href="visitors.html" data-page="visitors">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c1-4 3.5-6 6.5-6s5.5 2 6.5 6"/><circle cx="17.5" cy="7" r="2.4"/><path d="M15.5 13.2c2.4.4 4 2.2 5 5.8"/></svg>
+    Visitors
+  </a>
+  <a class="nav-item" href="generator.html" data-page="generator">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14h1v1h-1zM14 20h1v1h-1zM17.5 17.5h3.5v3.5h-3.5z"/></svg>
+    QR Generator
+  </a>
+  <a class="nav-item" href="scanner.html" data-page="scanner">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 8V5a1 1 0 0 1 1-1h3M20 8V5a1 1 0 0 0-1-1h-3M4 16v3a1 1 0 0 0 1 1h3M20 16v3a1 1 0 0 1-1 1h-3"/><path d="M4 12h16"/></svg>
+    QR Scanner
+  </a>
+  <a class="nav-item" href="logs.html" data-page="logs">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 3h11l3 3v15H5z"/><path d="M9 11h6M9 15h6M9 7h3"/></svg>
+    Attendance Logs
+  </a>
+</nav>
+      <div class="nav-spacer"></div>
+<div class="sidebar-foot">
+  <div class="sec-badge">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+    Encrypted local storage
+  </div>
+</div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <div>
+          <h1 id="topbar-title">Visitors</h1>
+          <div class="topbar-sub" id="topbar-sub">Manage students and visitors for QR attendance</div>
+        </div>
+        <div class="topbar-right">
+          <div id="google-auth" class="google-auth"></div>
+          <div class="live-pill"><span class="live-dot"></span>LIVE</div>
+          <div class="clock" id="clock">--:--:--</div>
+        </div>
+      </header>
+
+      <section class="view" id="view-visitors">
+      <div class="toolbar">
+        <div class="search-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" id="visitor-search" placeholder="Search visitors...">
+        </div>
+        <div class="spacer"></div>
+        <button class="btn primary" id="btn-add-visitor">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Add visitor
+        </button>
+      </div>
+      <div class="card" style="padding:0;overflow:hidden;">
+        <table>
+          <thead><tr><th>Name</th><th>Type</th><th>Contact</th><th>Purpose</th><th>Host</th><th>Registered</th><th></th></tr></thead>
+          <tbody id="visitors-body"></tbody>
+        </table>
+        <div class="empty" id="visitors-empty" style="display:none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-5 4.5-7 8-7s6.5 2 8 7"/></svg>
+          <div>No visitors registered yet. Add one to generate their QR code.</div>
+        </div>
+      </div>
+    </section>
+
+    </div>
+  </div>
+
+  <div id="modal-root"></div>
+  <script src="js/script.js"></script>
+</body>
+</html>

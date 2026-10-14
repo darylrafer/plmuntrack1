@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>PLMunTrack - Attendance</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f3f6fb;
+            color: #222;
+        }
+
+
+        /* HEADER */
+
+        .header {
+            background: linear-gradient(
+                135deg,
+                #0645ad,
+                #0b76e8
+            );
+
+            color: white;
+
+            padding: 25px 40px;
+
+            box-shadow:
+                0 3px 10px
+                rgba(0,0,0,0.15);
+        }
+
+
+        .header h1 {
+            margin: 0;
+            font-size: 30px;
+        }
+
+
+        .header p {
+            margin: 7px 0 0;
+            font-size: 15px;
+            opacity: 0.9;
+        }
+
+
+        /* MAIN */
+
+        .container {
+            padding: 35px;
+        }
+
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+
+        .page-title h2 {
+            margin: 0;
+            font-size: 26px;
+            color: #12345b;
+        }
+
+
+        .page-title p {
+            margin-top: 7px;
+            color: #777;
+        }
+
+
+        /* CARD */
+
+        .card {
+            background: white;
+
+            border-radius: 15px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,0.08);
+        }
+
+
+        /* TOP BAR */
+
+        .top-bar {
+            display: flex;
+
+            justify-content:
+                space-between;
+
+            align-items: center;
+
+            margin-bottom: 20px;
+        }
+
+
+        .record-count {
+            font-size: 15px;
+            color: #666;
+        }
+
+
+        .refresh-btn {
+            background: #0b5ed7;
+
+            color: white;
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 14px;
+        }
+
+
+        .refresh-btn:hover {
+            background: #084298;
+        }
+
+
+        /* MESSAGE */
+
+        .message {
+            padding: 12px 15px;
+
+            margin-bottom: 20px;
+
+            border-radius: 8px;
+
+            background: #eef5ff;
+
+            color: #0b5ed7;
+
+            font-size: 14px;
+        }
+
+
+        /* TABLE */
+
+        .table-container {
+            width: 100%;
+
+            overflow-x: auto;
+        }
+
+
+        table {
+            width: 100%;
+
+            min-width: 900px;
+
+            border-collapse:
+                collapse;
+        }
+
+
+        th {
+            background: #0b5ed7;
+
+            color: white;
+
+            padding: 15px;
+
+            text-align: left;
+
+            font-size: 14px;
+        }
+
+
+        td {
+            padding: 14px;
+
+            border-bottom:
+                1px solid #e5e5e5;
+
+            font-size: 14px;
+        }
+
+
+        tr:hover {
+            background: #f5f9ff;
+        }
+
+
+        /* TYPE */
+
+        .time-in {
+            color: #198754;
+            font-weight: bold;
+        }
+
+
+        .time-out {
+            color: #d97706;
+            font-weight: bold;
+        }
+
+
+        /* STATUS */
+
+        .recorded {
+            color: #0b5ed7;
+            font-weight: bold;
+        }
+
+
+        /* EMPTY */
+
+        .empty {
+            text-align: center;
+
+            padding: 40px;
+
+            color: #777;
+        }
+
+
+        /* MOBILE */
+
+        @media (max-width: 768px) {
+
+            .header {
+                padding: 20px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .top-bar {
+                flex-direction:
+                    column;
+
+                align-items:
+                    flex-start;
+
+                gap: 12px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <h1>
+            PLMunTrack
+        </h1>
+
+        <p>
+            QR Code-Based Attendance
+            Management System
+        </p>
+
+    </div>
+
+
+    <!-- MAIN -->
+
+    <div class="container">
+
+
+        <!-- PAGE TITLE -->
+
+        <div class="page-title">
+
+            <h2>
+                Attendance Records
+            </h2>
+
+            <p>
+                View and monitor student
+                attendance records.
+            </p>
+
+        </div>
+
+
+        <!-- CARD -->
+
+        <div class="card">
+
+
+            <!-- TOP BAR -->
+
+            <div class="top-bar">
+
+                <div
+                    class="record-count"
+                    id="recordCount">
+
+                    Loading records...
+
+                </div>
+
+
+                <button
+                    class="refresh-btn"
+                    onclick="loadAttendance()">
+
+                    🔄 Refresh
+
+                </button>
+
+            </div>
+
+
+            <!-- MESSAGE -->
+
+            <div
+                id="message"
+                class="message">
+
+                Connecting to
+                PLMunTrack...
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Attendance ID
+                            </th>
+
+                            <th>
+                                Student Number
+                            </th>
+
+                            <th>
+                                QR Token
+                            </th>
+
+                            <th>
+                                Date
+                            </th>
+
+                            <th>
+                                Time
+                            </th>
+
+                            <th>
+                                Type
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody
+                        id="attendanceTable">
+
+                        <tr>
+
+                            <td
+                                colspan="7"
+                                class="empty">
+
+                                Loading attendance
+                                records...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+
+        // =====================================================
+        // PLMunTrack API
+        // =====================================================
+
+        const API_URL =
+            "https://script.google.com/macros/s/AKfycbzZ8R2x6kVoUPFaCBEYg4kg0G-YvGBDZs8mnKcrSbotlOLpksedVGacluzqdfK2ivsR/exec";
+
+
+        // =====================================================
+        // LOAD ATTENDANCE
+        // =====================================================
+
+        function loadAttendance() {
+
+            document.getElementById(
+                "message"
+            ).innerText =
+                "Loading attendance records...";
+
+
+            document.getElementById(
+                "recordCount"
+            ).innerText =
+                "Loading...";
+
+
+            fetch(
+                API_URL +
+                "?action=getAttendance"
+            )
+
+            .then(
+                response =>
+                    response.json()
+            )
+
+            .then(
+                data => {
+
+                    console.log(
+                        "Attendance API:",
+                        data
+                    );
+
+
+                    if (
+                        !data.success
+                    ) {
+
+                        showError(
+                            data.message ||
+                            "Unable to load attendance records."
+                        );
+
+                        return;
+                    }
+
+
+                    displayAttendance(
+                        data.records ||
+                        []
+                    );
+
+                }
+            )
+
+            .catch(
+                error => {
+
+                    console.error(
+                        "API ERROR:",
+                        error
+                    );
+
+
+                    showError(
+                        "Unable to connect to PLMunTrack."
+                    );
+
+                }
+            );
+
+        }
+
+
+        // =====================================================
+        // DISPLAY ATTENDANCE
+        // =====================================================
+
+        function displayAttendance(
+            records
+        ) {
+
+            const table =
+                document.getElementById(
+                    "attendanceTable"
+                );
+
+
+            table.innerHTML = "";
+
+
+            if (
+                !records ||
+                records.length === 0
+            ) {
+
+                table.innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty">
+
+                            No attendance
+                            records found.
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+
+                document.getElementById(
+                    "message"
+                ).innerText =
+                    "No attendance records found.";
+
+
+                document.getElementById(
+                    "recordCount"
+                ).innerText =
+                    "0 records";
+
+
+                return;
+            }
+
+
+            records.forEach(
+                record => {
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    let typeClass = "";
+
+
+                    if (
+                        record.type ===
+                        "Time-In"
+                    ) {
+
+                        typeClass =
+                            "time-in";
+
+                    }
+
+
+                    if (
+                        record.type ===
+                        "Time-Out"
+                    ) {
+
+                        typeClass =
+                            "time-out";
+
+                    }
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${escapeHTML(
+                                record.attendanceId
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                record.studentNumber
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                record.qrToken
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                record.date
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHTML(
+                                record.time
+                            )}
+                        </td>
+
+                        <td
+                            class="${typeClass}">
+
+                            ${escapeHTML(
+                                record.type
+                            )}
+
+                        </td>
+
+                        <td
+                            class="recorded">
+
+                            ${escapeHTML(
+                                record.status
+                            )}
+
+                        </td>
+
+                    `;
+
+
+                    table.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+
+            document.getElementById(
+                "message"
+            ).innerText =
+                "Attendance records loaded successfully.";
+
+
+            document.getElementById(
+                "recordCount"
+            ).innerText =
+                records.length +
+                " record(s)";
+
+        }
+
+
+        // =====================================================
+        // ERROR
+        // =====================================================
+
+        function showError(
+            message
+        ) {
+
+            document.getElementById(
+                "message"
+            ).innerText =
+                message;
+
+
+            document.getElementById(
+                "recordCount"
+            ).innerText =
+                "Error";
+
+
+            document.getElementById(
+                "attendanceTable"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty">
+
+                        ${escapeHTML(
+                            message
+                        )}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        }
+
+
+        // =====================================================
+        // SECURITY
+        // =====================================================
+
+        function escapeHTML(
+            value
+        ) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
+                return "";
+
+            }
+
+
+            return String(value)
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        // =====================================================
+        // START
+        // =====================================================
+
+        window.onload =
+            loadAttendance;
+
+
+    </script>
+
+
+</body>
+
+</html>

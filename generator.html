@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PLMunTrack - QR Generator</title>
+
+    <!-- QR CODE LIBRARY -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f4f7fb, #e8eef7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .card {
+            width: 430px;
+            max-width: 100%;
+            background: #ffffff;
+            border-radius: 22px;
+            padding: 35px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo-area {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            border-radius: 18px;
+            background: #0d47a1;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            font-weight: bold;
+            box-shadow: 0 8px 18px rgba(13, 71, 161, 0.25);
+        }
+
+        .logo-area h1 {
+            margin-top: 15px;
+            font-size: 27px;
+            color: #172033;
+        }
+
+        .logo-area p {
+            margin-top: 6px;
+            color: #7a8494;
+            font-size: 14px;
+        }
+
+        .divider {
+            height: 1px;
+            background: #e5e9ef;
+            margin: 25px 0;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333b48;
+            margin-bottom: 8px;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 14px 15px;
+            border: 1px solid #d6dce5;
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .input-box:focus {
+            border-color: #0d47a1;
+            box-shadow: 0 0 0 3px rgba(13, 71, 161, 0.10);
+        }
+
+        .generate-btn {
+            width: 100%;
+            border: none;
+            border-radius: 10px;
+            padding: 14px;
+            background: #0d47a1;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 7px 16px rgba(13, 71, 161, 0.25);
+        }
+
+        .generate-btn:active {
+            transform: translateY(0);
+        }
+
+        #message {
+            margin-top: 18px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        #studentInfo {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f6f8fb;
+            border-radius: 12px;
+            text-align: center;
+            color: #333b48;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .qr-section {
+            margin-top: 25px;
+            padding: 20px;
+            background: #ffffff;
+            border: 1px solid #e5e9ef;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .qr-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333b48;
+            margin-bottom: 15px;
+        }
+
+        #qrContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 220px;
+        }
+
+        #qrContainer img {
+            border: 8px solid white;
+        }
+
+        .valid-note {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #7a8494;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 12px;
+            color: #8a93a0;
+        }
+
+        .footer strong {
+            color: #0d47a1;
+        }
+
+        @media (max-width: 480px) {
+
+            body {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 25px 20px;
+            }
+
+            .logo-area h1 {
+                font-size: 23px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="card">
+
+        <!-- HEADER -->
+        <div class="logo-area">
+
+            <div class="logo">
+                QR
+            </div>
+
+            <h1>PLMunTrack</h1>
+
+            <p>
+                QR Code Generator
+            </p>
+
+        </div>
+
+
+        <div class="divider"></div>
+
+
+        <!-- STUDENT NUMBER -->
+        <div class="form-group">
+
+            <label for="studentNumber">
+                Student Number
+            </label>
+
+            <input
+                type="text"
+                id="studentNumber"
+                class="input-box"
+                placeholder="Enter Student Number"
+            >
+
+        </div>
+
+
+        <!-- GENERATE BUTTON -->
+        <button
+            class="generate-btn"
+            onclick="generateQR()">
+
+            Generate Today's QR
+
+        </button>
+
+
+        <!-- MESSAGE -->
+        <div id="message"></div>
+
+
+        <!-- STUDENT INFORMATION -->
+        <div id="studentInfo"></div>
+
+
+        <!-- QR SECTION -->
+        <div class="qr-section">
+
+            <div class="qr-title">
+                Your Daily QR Code
+            </div>
+
+            <div id="qrContainer"></div>
+
+            <div class="valid-note">
+                QR code is valid for today's attendance only.
+            </div>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <div class="footer">
+
+            Pamantasan ng Lungsod ng Muntinlupa<br>
+
+            <strong>PLMunTrack Attendance System</strong>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        const WEB_APP_URL =
+            "https://script.google.com/macros/s/AKfycbzZ8R2x6kVoUPFaCBEYg4kg0G-YvGBDZs8mnKcrSbotlOLpksedVGacluzqdfK2ivsR/exec";
+
+
+        function generateQR() {
+
+            const studentNumber =
+                document
+                    .getElementById("studentNumber")
+                    .value
+                    .trim();
+
+
+            const message =
+                document.getElementById("message");
+
+            const studentInfo =
+                document.getElementById("studentInfo");
+
+            const qrContainer =
+                document.getElementById("qrContainer");
+
+
+            if (!studentNumber) {
+
+                message.textContent =
+                    "Please enter a Student Number.";
+
+                message.style.color = "#d32f2f";
+
+                return;
+            }
+
+
+            message.textContent =
+                "Generating QR Code...";
+
+            message.style.color = "#333";
+
+
+            studentInfo.innerHTML = "";
+
+            qrContainer.innerHTML = "";
+
+
+            const url =
+                WEB_APP_URL +
+                "?action=generateQR&studentNumber=" +
+                encodeURIComponent(studentNumber);
+
+
+            fetch(url)
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (!data.success) {
+
+                        message.textContent =
+                            data.message;
+
+                        message.style.color =
+                            "#d32f2f";
+
+                        return;
+                    }
+
+
+                    message.textContent =
+                        "QR Code generated successfully!";
+
+                    message.style.color =
+                        "#2e7d32";
+
+
+                    studentInfo.innerHTML =
+
+                        "<strong>" +
+                        data.fullName +
+                        "</strong><br>" +
+
+                        "Student Number: " +
+                        data.studentNumber +
+                        "<br>" +
+
+                        "Valid Date: " +
+                        data.date;
+
+
+                    new QRCode(
+
+                        qrContainer,
+
+                        {
+                            text: data.qrToken,
+                            width: 220,
+                            height: 220
+                        }
+
+                    );
+
+                })
+
+
+                .catch(error => {
+
+                    console.error(error);
+
+                    message.textContent =
+                        "Connection error. Please try again.";
+
+                    message.style.color =
+                        "#d32f2f";
+
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
